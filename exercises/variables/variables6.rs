@@ -3,9 +3,14 @@
 // Execute `rustlings hint variables6` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
 
-const NUMBER = 3;
+/**
+ * 这是错误的
+ * const NUMBER = 3u32;
+ */
+
+// const 常量必须显式表明类型
+const NUMBER: u32 = 3;
 fn main() {
-    println!("Number {}", NUMBER);
+    print!("Number {}", NUMBER);
 }

@@ -5,11 +5,10 @@
 // Execute `rustlings hint primitive_types5` or use the `hint` watch subcommand
 // for a hint.
 
-// I AM NOT DONE
-
+// 元组 模式匹配 解构
 fn main() {
     let cat = ("Furry McFurson", 3.5);
-    let /* your pattern here */ = cat;
+    let (name, age) = cat;
 
-    println!("{} is {} years old.", name, age);
+    print!("{} is {} years old.", name, age);
 }

@@ -14,8 +14,17 @@
 // Execute `rustlings hint hashmaps3` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
 
+/**
+ * 在代码中，为什么在访问 scored 引用的成员时不需要显式解引用，而在其他情况下需要呢？
+ * 
+ * 在 Rust 中，当有一个引用时，可以直接使用.操作符来访问结构体或枚举的字段或方法，而不需要显式解引用。
+ * 这是因为 Rust 编译器能够自动解引用引用并访问相应的字段或方法。
+ * 在代码片段中，scored 是一个可变引用，指向了 HashMap 中某个键对应的值，该值是一个 Team 结构体。
+ * 因为 scored 是一个引用，而 Team 结构体的字段是直接的成员，
+ * 所以可以直接通过 scored.goals_scored 和 scored.goals_conceded 访问这些成员，而不需要手动解引用。
+ * 这种自动解引用使得代码更加清晰简洁，因为可以直接在引用上使用.操作符，而不需要手动解引用。
+ */
 use std::collections::HashMap;
 
 // A structure to store the goal details of a team.
@@ -39,6 +48,17 @@ fn build_scores_table(results: String) -> HashMap<String, Team> {
         // will be the number of goals conceded from team_2, and similarly
         // goals scored by team_2 will be the number of goals conceded by
         // team_1.
+        let mut scored = scores.entry(team_1_name).or_insert(Team { goals_scored: 0, goals_conceded: 0 });
+        
+        /* ⚠️WARNING!️⚠️️This is a wrong exp */
+        // *scored.goals_scored += team_1_score;
+        
+        scored.goals_scored += team_1_score;
+        scored.goals_conceded += team_2_score;
+
+        scored = scores.entry(team_2_name).or_insert(Team { goals_scored: 0, goals_conceded: 0 });
+        scored.goals_scored += team_2_score;
+        scored.goals_conceded += team_1_score;
     }
     scores
 }

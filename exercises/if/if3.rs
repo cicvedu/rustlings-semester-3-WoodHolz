@@ -2,17 +2,19 @@
 //
 // Execute `rustlings hint if3` or use the `hint` watch subcommand for a hint.
 
-// I AM NOT DONE
 
+/**
+ *  let 与 if 类型搭配赋值时 类型需相同
+ */
 pub fn animal_habitat(animal: &str) -> &'static str {
     let identifier = if animal == "crab" {
-        1
+        1i32
     } else if animal == "gopher" {
-        2.0
+        2i32
     } else if animal == "snake" {
-        3
+        3i32
     } else {
-        "Unknown"
+        4i32
     };
 
     // DO NOT CHANGE THIS STATEMENT BELOW
