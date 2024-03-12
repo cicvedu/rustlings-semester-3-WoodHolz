@@ -1,0 +1,1440 @@
+diff --git a/exercises/enums/enums1.rs b/exercises/enums/enums1.rs
+index 25525b2..b8a4b01 100644
+--- a/exercises/enums/enums1.rs
++++ b/exercises/enums/enums1.rs
+@@ -2,11 +2,11 @@
+ //
+ // No hints this time! ;)
+ 
+-// I AM NOT DONE
+ 
+ #[derive(Debug)]
+ enum Message {
+     // TODO: define a few types of messages as used below
++    Quit, Echo, Move, ChangeColor
+ }
+ 
+ fn main() {
+diff --git a/exercises/enums/enums2.rs b/exercises/enums/enums2.rs
+index df93fe0..15b9e8d 100644
+--- a/exercises/enums/enums2.rs
++++ b/exercises/enums/enums2.rs
+@@ -3,11 +3,14 @@
+ // Execute `rustlings hint enums2` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
+ 
+ #[derive(Debug)]
+ enum Message {
+     // TODO: define the different variants used below
++    Move { x: i32, y: i32 },
++    Echo (String),
++    ChangeColor (i32, i32, i32),
++    Quit,
+ }
+ 
+ impl Message {
+diff --git a/exercises/enums/enums3.rs b/exercises/enums/enums3.rs
+index 5d28441..cfb0531 100644
+--- a/exercises/enums/enums3.rs
++++ b/exercises/enums/enums3.rs
+@@ -5,10 +5,14 @@
+ // Execute `rustlings hint enums3` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
+ 
+ enum Message {
+     // TODO: implement the message variant types based on their usage below
++    Quit,
++    Move (Point),
++    ChangeColor(u8, u8, u8),
++    Echo (String),
++
+ }
+ 
+ struct Point {
+@@ -43,6 +47,20 @@ impl State {
+         // variants
+         // Remember: When passing a tuple as a function argument, you'll need
+         // extra parentheses: fn function((t, u, p, l, e))
++        match message {
++            Message::Move(point) => {
++                self.move_position(point);
++            }
++            Message::Echo(enter) => {
++                self.echo(enter);
++            }
++            Message::ChangeColor(r, g, b) => {
++                self.change_color((r, g, b));
++            }
++            Message::Quit => {
++                self.quit();
++            }
++        }
+     }
+ }
+ 
+diff --git a/exercises/error_handling/errors1.rs b/exercises/error_handling/errors1.rs
+index 13d2724..c7fd630 100644
+--- a/exercises/error_handling/errors1.rs
++++ b/exercises/error_handling/errors1.rs
+@@ -9,14 +9,14 @@
+ // Execute `rustlings hint errors1` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
+ 
+-pub fn generate_nametag_text(name: String) -> Option<String> {
++use std::{fmt::format, result::Result::{ Err, Ok }} ;
++pub fn generate_nametag_text(name: String) -> Result<String, String>  {
+     if name.is_empty() {
+         // Empty names aren't allowed.
+-        None
++        Err(format!("`name` was empty; it must be nonempty."))
+     } else {
+-        Some(format!("Hi! My name is {}", name))
++        Ok(format!("Hi! My name is {}", name))
+     }
+ }
+ 
+diff --git a/exercises/error_handling/errors2.rs b/exercises/error_handling/errors2.rs
+index d86f326..b501ba4 100644
+--- a/exercises/error_handling/errors2.rs
++++ b/exercises/error_handling/errors2.rs
+@@ -5,7 +5,7 @@
+ // token. A player of the game will type in how many items they want to buy, and
+ // the `total_cost` function will calculate the total cost of the tokens. Since
+ // the player typed in the quantity, though, we get it as a string-- and they
+-// might have typed anything, not just numbers!
++// might have typed anything, not just numbers! 🤣
+ //
+ // Right now, this function isn't handling the error case at all (and isn't
+ // handling the success case properly either). What we want to do is: if we call
+@@ -19,15 +19,15 @@
+ // Execute `rustlings hint errors2` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
++// try other ways
+ 
+ use std::num::ParseIntError;
+ 
+ pub fn total_cost(item_quantity: &str) -> Result<i32, ParseIntError> {
+     let processing_fee = 1;
+     let cost_per_item = 5;
+-    let qty = item_quantity.parse::<i32>();
+-
++    /* method 1 */
++    let qty = item_quantity.parse::<i32>()?;
+     Ok(qty * cost_per_item + processing_fee)
+ }
+ 
+diff --git a/exercises/error_handling/errors3.rs b/exercises/error_handling/errors3.rs
+index d42d3b1..eaa97a2 100644
+--- a/exercises/error_handling/errors3.rs
++++ b/exercises/error_handling/errors3.rs
+@@ -7,11 +7,11 @@
+ // Execute `rustlings hint errors3` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
++// Confused
+ 
+ use std::num::ParseIntError;
+ 
+-fn main() {
++fn main() -> Result<() , ParseIntError> {
+     let mut tokens = 100;
+     let pretend_user_input = "8";
+ 
+@@ -23,6 +23,7 @@ fn main() {
+         tokens -= cost;
+         println!("You now have {} tokens.", tokens);
+     }
++    Ok(())
+ }
+ 
+ pub fn total_cost(item_quantity: &str) -> Result<i32, ParseIntError> {
+diff --git a/exercises/error_handling/errors4.rs b/exercises/error_handling/errors4.rs
+index e04bff7..a41011b 100644
+--- a/exercises/error_handling/errors4.rs
++++ b/exercises/error_handling/errors4.rs
+@@ -3,7 +3,8 @@
+ // Execute `rustlings hint errors4` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
++use std::collections::btree_map::Values;
++
+ 
+ #[derive(PartialEq, Debug)]
+ struct PositiveNonzeroInteger(u64);
+@@ -17,7 +18,22 @@ enum CreationError {
+ impl PositiveNonzeroInteger {
+     fn new(value: i64) -> Result<PositiveNonzeroInteger, CreationError> {
+         // Hmm...? Why is this only returning an Ok value?
+-        Ok(PositiveNonzeroInteger(value as u64))
++        /* 1 */
++        // if value.is_negative() {
++        //     Err(CreationError::Negative)
++        // } else if 0 == value {
++        //     Err(CreationError::Zero)
++        // } else {
++        //     Ok(PositiveNonzeroInteger(value as u64))
++        // }
++
++        /* 2 */
++        match value {
++            value if value < 0 => Err(CreationError::Negative),
++            value if value == 0 => Err(CreationError::Zero),
++            _ => Ok(PositiveNonzeroInteger(value as u64)),
++        }
++
+     }
+ }
+ 
+diff --git a/exercises/error_handling/errors5.rs b/exercises/error_handling/errors5.rs
+index 92461a7..9f9f155 100644
+--- a/exercises/error_handling/errors5.rs
++++ b/exercises/error_handling/errors5.rs
+@@ -22,14 +22,15 @@
+ // Execute `rustlings hint errors5` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
++// Confused
+ 
+ use std::error;
++// use std::error::Error;
+ use std::fmt;
+ use std::num::ParseIntError;
+ 
+ // TODO: update the return type of `main()` to make this compile.
+-fn main() -> Result<(), Box<dyn ???>> {
++fn main() -> Result<(), Box<dyn error::Error>> {
+     let pretend_user_input = "42";
+     let x: i64 = pretend_user_input.parse()?;
+     println!("output={:?}", PositiveNonzeroInteger::new(x)?);
+diff --git a/exercises/error_handling/errors6.rs b/exercises/error_handling/errors6.rs
+index aaf0948..3343c2f 100644
+--- a/exercises/error_handling/errors6.rs
++++ b/exercises/error_handling/errors6.rs
+@@ -25,14 +25,21 @@ impl ParsePosNonzeroError {
+         ParsePosNonzeroError::Creation(err)
+     }
+     // TODO: add another error conversion function here.
+-    // fn from_parseint...
++    fn from_parseint(err: ParseIntError) -> ParsePosNonzeroError {
++        ParsePosNonzeroError::ParseInt(err)
++    }
+ }
+ 
+ fn parse_pos_nonzero(s: &str) -> Result<PositiveNonzeroInteger, ParsePosNonzeroError> {
+     // TODO: change this to return an appropriate error instead of panicking
+     // when `parse()` returns an error.
+     let x: i64 = s.parse().unwrap();
++    match Some(ParsePosNonzeroError) {
++        ParseInt(x) => PositiveNonzeroInteger::new(x).map_err(ParsePosNonzeroError::from_parseint),
++
++    }
+     PositiveNonzeroInteger::new(x).map_err(ParsePosNonzeroError::from_creation)
++    
+ }
+ 
+ // Don't change anything below this line.
+diff --git a/exercises/functions/functions1.rs b/exercises/functions/functions1.rs
+index 40ed9a0..2f21154 100644
+--- a/exercises/functions/functions1.rs
++++ b/exercises/functions/functions1.rs
+@@ -3,8 +3,10 @@
+ // Execute `rustlings hint functions1` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
+ 
+ fn main() {
+     call_me();
+ }
++fn call_me() {
++    print!("Hello world");
++}
+\ No newline at end of file
+diff --git a/exercises/functions/functions2.rs b/exercises/functions/functions2.rs
+index 5154f34..318f80d 100644
+--- a/exercises/functions/functions2.rs
++++ b/exercises/functions/functions2.rs
+@@ -3,13 +3,12 @@
+ // Execute `rustlings hint functions2` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
+ 
+ fn main() {
+     call_me(3);
+ }
+ 
+-fn call_me(num:) {
++fn call_me(num:i32) {
+     for i in 0..num {
+         println!("Ring! Call number {}", i + 1);
+     }
+diff --git a/exercises/functions/functions3.rs b/exercises/functions/functions3.rs
+index 74f44d6..0a01731 100644
+--- a/exercises/functions/functions3.rs
++++ b/exercises/functions/functions3.rs
+@@ -3,10 +3,9 @@
+ // Execute `rustlings hint functions3` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
+ 
+ fn main() {
+-    call_me();
++    call_me(3);
+ }
+ 
+ fn call_me(num: u32) {
+diff --git a/exercises/functions/functions4.rs b/exercises/functions/functions4.rs
+index 77c4b2a..108bdb2 100644
+--- a/exercises/functions/functions4.rs
++++ b/exercises/functions/functions4.rs
+@@ -8,14 +8,14 @@
+ // Execute `rustlings hint functions4` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
+ 
+ fn main() {
+     let original_price = 51;
+     println!("Your sale price is {}", sale_price(original_price));
+ }
+ 
+-fn sale_price(price: i32) -> {
++// 函数有返回值的话 必须声明类型
++fn sale_price(price: i32) -> i32 {
+     if is_even(price) {
+         price - 10
+     } else {
+diff --git a/exercises/functions/functions5.rs b/exercises/functions/functions5.rs
+index f1b63f4..2298b86 100644
+--- a/exercises/functions/functions5.rs
++++ b/exercises/functions/functions5.rs
+@@ -3,7 +3,6 @@
+ // Execute `rustlings hint functions5` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
+ 
+ fn main() {
+     let answer = square(3);
+@@ -11,5 +10,6 @@ fn main() {
+ }
+ 
+ fn square(num: i32) -> i32 {
+-    num * num;
++    num * num
++    // 返回 不用分号
+ }
+diff --git a/exercises/hashmaps/hashmaps1.rs b/exercises/hashmaps/hashmaps1.rs
+index 80829ea..cc1ff27 100644
+--- a/exercises/hashmaps/hashmaps1.rs
++++ b/exercises/hashmaps/hashmaps1.rs
+@@ -11,17 +11,19 @@
+ // Execute `rustlings hint hashmaps1` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
+ 
+ use std::collections::HashMap;
+ 
+ fn fruit_basket() -> HashMap<String, u32> {
+-    let mut basket = // TODO: declare your hash map here.
++    let mut basket = HashMap::new(); // TODO: declare your hash map here.
+ 
+     // Two bananas are already given for you :)
+-    basket.insert(String::from("banana"), 2);
++    basket.insert(String::from("banana"), 1);
+ 
+     // TODO: Put more fruits in your basket here.
++    basket.insert(String::from("apple"), 1);
++
++    basket.insert(String::from("mango"), 3);
+ 
+     basket
+ }
+diff --git a/exercises/hashmaps/hashmaps2.rs b/exercises/hashmaps/hashmaps2.rs
+index a592569..f7f2516 100644
+--- a/exercises/hashmaps/hashmaps2.rs
++++ b/exercises/hashmaps/hashmaps2.rs
+@@ -14,7 +14,7 @@
+ // Execute `rustlings hint hashmaps2` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
++// entry and or_insert method
+ 
+ use std::collections::HashMap;
+ 
+@@ -40,6 +40,7 @@ fn fruit_basket(basket: &mut HashMap<Fruit, u32>) {
+         // TODO: Insert new fruits if they are not already present in the
+         // basket. Note that you are not allowed to put any type of fruit that's
+         // already present!
++        basket.entry(fruit).or_insert(1);
+     }
+ }
+ 
+diff --git a/exercises/hashmaps/hashmaps3.rs b/exercises/hashmaps/hashmaps3.rs
+index 08e977c..d74efe6 100644
+--- a/exercises/hashmaps/hashmaps3.rs
++++ b/exercises/hashmaps/hashmaps3.rs
+@@ -14,8 +14,17 @@
+ // Execute `rustlings hint hashmaps3` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
+ 
++/**
++ * 在代码中，为什么在访问 scored 引用的成员时不需要显式解引用，而在其他情况下需要呢？
++ * 
++ * 在 Rust 中，当有一个引用时，可以直接使用.操作符来访问结构体或枚举的字段或方法，而不需要显式解引用。
++ * 这是因为 Rust 编译器能够自动解引用引用并访问相应的字段或方法。
++ * 在代码片段中，scored 是一个可变引用，指向了 HashMap 中某个键对应的值，该值是一个 Team 结构体。
++ * 因为 scored 是一个引用，而 Team 结构体的字段是直接的成员，
++ * 所以可以直接通过 scored.goals_scored 和 scored.goals_conceded 访问这些成员，而不需要手动解引用。
++ * 这种自动解引用使得代码更加清晰简洁，因为可以直接在引用上使用.操作符，而不需要手动解引用。
++ */
+ use std::collections::HashMap;
+ 
+ // A structure to store the goal details of a team.
+@@ -39,6 +48,17 @@ fn build_scores_table(results: String) -> HashMap<String, Team> {
+         // will be the number of goals conceded from team_2, and similarly
+         // goals scored by team_2 will be the number of goals conceded by
+         // team_1.
++        let mut scored = scores.entry(team_1_name).or_insert(Team { goals_scored: 0, goals_conceded: 0 });
++        
++        /* ⚠️WARNING!️⚠️️This is a wrong exp */
++        // *scored.goals_scored += team_1_score;
++        
++        scored.goals_scored += team_1_score;
++        scored.goals_conceded += team_2_score;
++
++        scored = scores.entry(team_2_name).or_insert(Team { goals_scored: 0, goals_conceded: 0 });
++        scored.goals_scored += team_2_score;
++        scored.goals_conceded += team_1_score;
+     }
+     scores
+ }
+diff --git a/exercises/if/if1.rs b/exercises/if/if1.rs
+index d8108a0..f7a9812 100644
+--- a/exercises/if/if1.rs
++++ b/exercises/if/if1.rs
+@@ -2,13 +2,14 @@
+ //
+ // Execute `rustlings hint if1` or use the `hint` watch subcommand for a hint.
+ 
+-// I AM NOT DONE
+ 
+ pub fn bigger(a: i32, b: i32) -> i32 {
+     // Complete this function to return the bigger number!
+     // Do not use:
+     // - another function call
+     // - additional variables
++    if a > b {a} 
++    else {b}
+ }
+ 
+ // Don't mind this for now :)
+diff --git a/exercises/if/if2.rs b/exercises/if/if2.rs
+index f512f13..40c0780 100644
+--- a/exercises/if/if2.rs
++++ b/exercises/if/if2.rs
+@@ -5,13 +5,14 @@
+ //
+ // Execute `rustlings hint if2` or use the `hint` watch subcommand for a hint.
+ 
+-// I AM NOT DONE
+ 
+ pub fn foo_if_fizz(fizzish: &str) -> &str {
+     if fizzish == "fizz" {
+         "foo"
++    } else if fizzish == "fuzz" {
++        "bar"
+     } else {
+-        1
++        "baz"
+     }
+ }
+ 
+diff --git a/exercises/if/if3.rs b/exercises/if/if3.rs
+index 73a7025..93d2396 100644
+--- a/exercises/if/if3.rs
++++ b/exercises/if/if3.rs
+@@ -2,17 +2,19 @@
+ //
+ // Execute `rustlings hint if3` or use the `hint` watch subcommand for a hint.
+ 
+-// I AM NOT DONE
+ 
++/**
++ *  let 与 if 类型搭配赋值时 类型需相同
++ */
+ pub fn animal_habitat(animal: &str) -> &'static str {
+     let identifier = if animal == "crab" {
+-        1
++        1i32
+     } else if animal == "gopher" {
+-        2.0
++        2i32
+     } else if animal == "snake" {
+-        3
++        3i32
+     } else {
+-        "Unknown"
++        4i32
+     };
+ 
+     // DO NOT CHANGE THIS STATEMENT BELOW
+diff --git a/exercises/intro/intro2.rs b/exercises/intro/intro2.rs
+index 990b20f..6c3f638 100644
+--- a/exercises/intro/intro2.rs
++++ b/exercises/intro/intro2.rs
+@@ -5,8 +5,7 @@
+ // Execute `rustlings hint intro2` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
+ 
+ fn main() {
+-    println!("Hello {}!");
++    println!("Hello world!");
+ }
+diff --git a/exercises/modules/modules1.rs b/exercises/modules/modules1.rs
+index 9eb5a48..50b60bc 100644
+--- a/exercises/modules/modules1.rs
++++ b/exercises/modules/modules1.rs
+@@ -3,7 +3,6 @@
+ // Execute `rustlings hint modules1` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
+ 
+ mod sausage_factory {
+     // Don't let anybody outside of this module see this!
+@@ -11,7 +10,7 @@ mod sausage_factory {
+         String::from("Ginger")
+     }
+ 
+-    fn make_sausage() {
++    pub fn make_sausage() {
+         get_secret_recipe();
+         println!("sausage!");
+     }
+diff --git a/exercises/modules/modules2.rs b/exercises/modules/modules2.rs
+index 0415454..f4a0450 100644
+--- a/exercises/modules/modules2.rs
++++ b/exercises/modules/modules2.rs
+@@ -7,12 +7,11 @@
+ // Execute `rustlings hint modules2` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
+-
++// Providing New Names with the as Keyword
+ mod delicious_snacks {
+     // TODO: Fix these use statements
+-    use self::fruits::PEAR as ???
+-    use self::veggies::CUCUMBER as ???
++    pub use self::fruits::PEAR as fruit;
++    pub use self::veggies::CUCUMBER as veggie;
+ 
+     mod fruits {
+         pub const PEAR: &'static str = "Pear";
+diff --git a/exercises/modules/modules3.rs b/exercises/modules/modules3.rs
+index f2bb050..a900251 100644
+--- a/exercises/modules/modules3.rs
++++ b/exercises/modules/modules3.rs
+@@ -8,10 +8,9 @@
+ // Execute `rustlings hint modules3` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
+ 
+ // TODO: Complete this use statement
+-use ???
++use std::time::{UNIX_EPOCH, SystemTime};
+ 
+ fn main() {
+     match SystemTime::now().duration_since(UNIX_EPOCH) {
+diff --git a/exercises/move_semantics/move_semantics1.rs b/exercises/move_semantics/move_semantics1.rs
+index 710d20d..eb65088 100644
+--- a/exercises/move_semantics/move_semantics1.rs
++++ b/exercises/move_semantics/move_semantics1.rs
+@@ -3,12 +3,11 @@
+ // Execute `rustlings hint move_semantics1` or use the `hint` watch subcommand
+ // for a hint.
+ 
+-// I AM NOT DONE
+ 
+ fn main() {
+     let vec0 = Vec::new();
+ 
+-    let vec1 = fill_vec(vec0);
++    let mut vec1 = fill_vec(vec0);
+ 
+     println!("{} has length {} content `{:?}`", "vec1", vec1.len(), vec1);
+ 
+diff --git a/exercises/move_semantics/move_semantics2.rs b/exercises/move_semantics/move_semantics2.rs
+index 72d37fa..aa54b90 100644
+--- a/exercises/move_semantics/move_semantics2.rs
++++ b/exercises/move_semantics/move_semantics2.rs
+@@ -7,12 +7,11 @@
+ // Execute `rustlings hint move_semantics2` or use the `hint` watch subcommand
+ // for a hint.
+ 
+-// I AM NOT DONE
+ 
+ fn main() {
+     let vec0 = Vec::new();
+ 
+-    let mut vec1 = fill_vec(vec0);
++    let mut vec1 = fill_vec(vec0.clone());
+ 
+     println!("{} has length {}, with contents: `{:?}`", "vec0", vec0.len(), vec0);
+ 
+diff --git a/exercises/move_semantics/move_semantics3.rs b/exercises/move_semantics/move_semantics3.rs
+index ea21493..7da54e3 100644
+--- a/exercises/move_semantics/move_semantics3.rs
++++ b/exercises/move_semantics/move_semantics3.rs
+@@ -6,8 +6,6 @@
+ // Execute `rustlings hint move_semantics3` or use the `hint` watch subcommand
+ // for a hint.
+ 
+-// I AM NOT DONE
+-
+ fn main() {
+     let vec0 = Vec::new();
+ 
+@@ -20,7 +18,7 @@ fn main() {
+     println!("{} has length {} content `{:?}`", "vec1", vec1.len(), vec1);
+ }
+ 
+-fn fill_vec(vec: Vec<i32>) -> Vec<i32> {
++fn fill_vec(mut vec: Vec<i32>) -> Vec<i32> {
+     vec.push(22);
+     vec.push(44);
+     vec.push(66);
+diff --git a/exercises/move_semantics/move_semantics4.rs b/exercises/move_semantics/move_semantics4.rs
+index 75a3b6b..d3b9f6b 100644
+--- a/exercises/move_semantics/move_semantics4.rs
++++ b/exercises/move_semantics/move_semantics4.rs
+@@ -7,24 +7,18 @@
+ // Execute `rustlings hint move_semantics4` or use the `hint` watch subcommand
+ // for a hint.
+ 
+-// I AM NOT DONE
+ 
+ fn main() {
+-    let vec0 = Vec::new();
+-
+-    let mut vec1 = fill_vec(vec0);
+-
++    let mut vec1 = fill_vec();
+     println!("{} has length {} content `{:?}`", "vec1", vec1.len(), vec1);
+ 
+     vec1.push(88);
+-
+     println!("{} has length {} content `{:?}`", "vec1", vec1.len(), vec1);
+ }
+ 
+ // `fill_vec()` no longer takes `vec: Vec<i32>` as argument
+ fn fill_vec() -> Vec<i32> {
+-    let mut vec = vec;
+-
++    let mut vec = Vec::new();
+     vec.push(22);
+     vec.push(44);
+     vec.push(66);
+diff --git a/exercises/move_semantics/move_semantics5.rs b/exercises/move_semantics/move_semantics5.rs
+index 68db09e..e354f10 100644
+--- a/exercises/move_semantics/move_semantics5.rs
++++ b/exercises/move_semantics/move_semantics5.rs
+@@ -6,13 +6,15 @@
+ // Execute `rustlings hint move_semantics5` or use the `hint` watch subcommand
+ // for a hint.
+ 
+-// I AM NOT DONE
+ 
++// 可变引用在任何时候都是唯一的
+ fn main() {
+     let mut x = 100;
++    // y 可变引用
+     let y = &mut x;
+-    let z = &mut x;
+     *y += 100;
++    // z 可变引用 从 y 转到 z 
++    let z = &mut x;
+     *z += 1000;
+     assert_eq!(x, 1200);
+ }
+diff --git a/exercises/move_semantics/move_semantics6.rs b/exercises/move_semantics/move_semantics6.rs
+index cace4ca..eabec30 100644
+--- a/exercises/move_semantics/move_semantics6.rs
++++ b/exercises/move_semantics/move_semantics6.rs
+@@ -5,24 +5,23 @@
+ // Execute `rustlings hint move_semantics6` or use the `hint` watch subcommand
+ // for a hint.
+ 
+-// I AM NOT DONE
+ 
+ fn main() {
+     let data = "Rust is great!".to_string();
+ 
+-    get_char(data);
++    println!("The get_char: {}", get_char(&data));
+ 
+-    string_uppercase(&data);
++    string_uppercase(data);
+ }
+ 
+ // Should not take ownership
+-fn get_char(data: String) -> char {
++fn get_char(data: &String) -> char {
+     data.chars().last().unwrap()
+ }
+ 
+ // Should take ownership
+-fn string_uppercase(mut data: &String) {
+-    data = &data.to_uppercase();
++fn string_uppercase(mut data: String) {
++    data = data.to_uppercase();
+ 
+     println!("{}", data);
+ }
+diff --git a/exercises/options/options1.rs b/exercises/options/options1.rs
+index e131b48..0038a68 100644
+--- a/exercises/options/options1.rs
++++ b/exercises/options/options1.rs
+@@ -3,7 +3,6 @@
+ // Execute `rustlings hint options1` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
+ 
+ // This function returns how much icecream there is left in the fridge.
+ // If it's before 10PM, there's 5 pieces left. At 10PM, someone eats them
+@@ -13,7 +12,13 @@ fn maybe_icecream(time_of_day: u16) -> Option<u16> {
+     // value of 0 The Option output should gracefully handle cases where
+     // time_of_day > 23.
+     // TODO: Complete the function body - remember to return an Option!
+-    ???
++    if time_of_day > 23 {
++        None
++    } else if time_of_day < 22 {
++        Some(5)
++    } else {
++        Some(0)
++    }
+ }
+ 
+ #[cfg(test)]
+@@ -33,7 +38,7 @@ mod tests {
+     fn raw_value() {
+         // TODO: Fix this test. How do you get at the value contained in the
+         // Option?
+-        let icecreams = maybe_icecream(12);
++        let icecreams = maybe_icecream(12).unwrap();
+         assert_eq!(icecreams, 5);
+     }
+ }
+diff --git a/exercises/options/options2.rs b/exercises/options/options2.rs
+index 4d998e7..28b1b18 100644
+--- a/exercises/options/options2.rs
++++ b/exercises/options/options2.rs
+@@ -3,7 +3,6 @@
+ // Execute `rustlings hint options2` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
+ 
+ #[cfg(test)]
+ mod tests {
+@@ -13,7 +12,7 @@ mod tests {
+         let optional_target = Some(target);
+ 
+         // TODO: Make this an if let statement whose value is "Some" type
+-        word = optional_target {
++        if let Some(word) = optional_target {
+             assert_eq!(word, target);
+         }
+     }
+@@ -32,11 +31,20 @@ mod tests {
+         // TODO: make this a while let statement - remember that vector.pop also
+         // adds another layer of Option<T>. You can stack `Option<T>`s into
+         // while let and if let.
+-        integer = optional_integers.pop() {
+-            assert_eq!(integer, cursor);
+-            cursor -= 1;
+-        }
+ 
++        /* 1 */
++        // while let Some(integer) = optional_integers.pop(){
++        //     if let Some(integer) = integer {
++        //         assert_eq!(integer, cursor);
++        //         cursor -= 1;
++        //     }
++        // }
++        
++        /* 2 */
++        while let Some(Some(integer)) = optional_integers.pop(){
++                assert_eq!(integer, cursor);
++                cursor -= 1;
++        }
+         assert_eq!(cursor, 0);
+     }
+ }
+diff --git a/exercises/options/options3.rs b/exercises/options/options3.rs
+index 23c15ea..ff9805b 100644
+--- a/exercises/options/options3.rs
++++ b/exercises/options/options3.rs
+@@ -3,7 +3,6 @@
+ // Execute `rustlings hint options3` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
+ 
+ struct Point {
+     x: i32,
+@@ -14,8 +13,9 @@ fn main() {
+     let y: Option<Point> = Some(Point { x: 100, y: 200 });
+ 
+     match y {
+-        Some(p) => println!("Co-ordinates are {},{} ", p.x, p.y),
++        Some(ref p) => println!("Co-ordinates are {},{} ", p.x, p.y),
+         _ => panic!("no match!"),
+     }
++
+     y; // Fix without deleting this line.
+ }
+diff --git a/exercises/primitive_types/README.md b/exercises/primitive_types/README.md
+index cea69b0..b9afa06 100644
+--- a/exercises/primitive_types/README.md
++++ b/exercises/primitive_types/README.md
+@@ -7,3 +7,5 @@ compiler. In this section, we'll go through the most important ones.
+ 
+ - [Data Types](https://doc.rust-lang.org/stable/book/ch03-02-data-types.html)
+ - [The Slice Type](https://doc.rust-lang.org/stable/book/ch04-03-slices.html)
++
++![20240216174857](https://cdn.jsdelivr.net/gh/WoodHolz/cloudimg/picture/20240216174857.png)
+\ No newline at end of file
+diff --git a/exercises/primitive_types/primitive_types1.rs b/exercises/primitive_types/primitive_types1.rs
+index e1cf52a..9e4fe49 100644
+--- a/exercises/primitive_types/primitive_types1.rs
++++ b/exercises/primitive_types/primitive_types1.rs
+@@ -6,7 +6,6 @@
+ // Execute `rustlings hint primitive_types1` or use the `hint` watch subcommand
+ // for a hint.
+ 
+-// I AM NOT DONE
+ 
+ fn main() {
+     // Booleans (`bool`)
+@@ -16,8 +15,9 @@ fn main() {
+         println!("Good morning!");
+     }
+ 
+-    let // Finish the rest of this line like the example! Or make it be false!
++    // Finish the rest of this line like the example! Or make it be false!
++    let is_evening = true;
+     if is_evening {
+-        println!("Good evening!");
++        print!("Good evening!");
+     }
+ }
+diff --git a/exercises/primitive_types/primitive_types2.rs b/exercises/primitive_types/primitive_types2.rs
+index fcc9705..5dca272 100644
+--- a/exercises/primitive_types/primitive_types2.rs
++++ b/exercises/primitive_types/primitive_types2.rs
+@@ -6,8 +6,7 @@
+ // Execute `rustlings hint primitive_types2` or use the `hint` watch subcommand
+ // for a hint.
+ 
+-// I AM NOT DONE
+-
++// 字符类型 使用单引号
+ fn main() {
+     // Characters (`char`)
+ 
+@@ -22,9 +21,10 @@ fn main() {
+         println!("Neither alphabetic nor numeric!");
+     }
+ 
+-    let // Finish this line like the example! What's your favorite character?
++    // Finish this line like the example! What's your favorite character?
+     // Try a letter, try a number, try a special character, try a character
+     // from a different language than your own, try an emoji!
++    let your_character = '🤣';
+     if your_character.is_alphabetic() {
+         println!("Alphabetical!");
+     } else if your_character.is_numeric() {
+diff --git a/exercises/primitive_types/primitive_types3.rs b/exercises/primitive_types/primitive_types3.rs
+index 06a7a62..462cc73 100644
+--- a/exercises/primitive_types/primitive_types3.rs
++++ b/exercises/primitive_types/primitive_types3.rs
+@@ -5,10 +5,9 @@
+ // Execute `rustlings hint primitive_types3` or use the `hint` watch subcommand
+ // for a hint.
+ 
+-// I AM NOT DONE
+ 
+ fn main() {
+-    let a = ???
++    let a = "hello rust world";
+ 
+     if a.len() >= 100 {
+         println!("Wow, that's a big array!");
+diff --git a/exercises/primitive_types/primitive_types4.rs b/exercises/primitive_types/primitive_types4.rs
+index d44d877..b753207 100644
+--- a/exercises/primitive_types/primitive_types4.rs
++++ b/exercises/primitive_types/primitive_types4.rs
+@@ -5,13 +5,14 @@
+ // Execute `rustlings hint primitive_types4` or use the `hint` watch subcommand
+ // for a hint.
+ 
+-// I AM NOT DONE
+ 
+ #[test]
+ fn slice_out_of_array() {
+     let a = [1, 2, 3, 4, 5];
+ 
+-    let nice_slice = ???
++    // slice
++    let nice_slice = &a[1..4];
++    // index = 1 length = 3
+ 
+     assert_eq!([2, 3, 4], nice_slice)
+ }
+diff --git a/exercises/primitive_types/primitive_types5.rs b/exercises/primitive_types/primitive_types5.rs
+index f646986..8ecec61 100644
+--- a/exercises/primitive_types/primitive_types5.rs
++++ b/exercises/primitive_types/primitive_types5.rs
+@@ -5,11 +5,10 @@
+ // Execute `rustlings hint primitive_types5` or use the `hint` watch subcommand
+ // for a hint.
+ 
+-// I AM NOT DONE
+-
++// 元组 模式匹配 解构
+ fn main() {
+     let cat = ("Furry McFurson", 3.5);
+-    let /* your pattern here */ = cat;
++    let (name, age) = cat;
+ 
+-    println!("{} is {} years old.", name, age);
++    print!("{} is {} years old.", name, age);
+ }
+diff --git a/exercises/primitive_types/primitive_types6.rs b/exercises/primitive_types/primitive_types6.rs
+index 07cc46c..f1d49c1 100644
+--- a/exercises/primitive_types/primitive_types6.rs
++++ b/exercises/primitive_types/primitive_types6.rs
+@@ -6,13 +6,12 @@
+ // Execute `rustlings hint primitive_types6` or use the `hint` watch subcommand
+ // for a hint.
+ 
+-// I AM NOT DONE
+-
++// 使用 . + 索引 直接访问元组元素
+ #[test]
+ fn indexing_tuple() {
+     let numbers = (1, 2, 3);
+     // Replace below ??? with the tuple indexing syntax.
+-    let second = ???;
++    let second = numbers.1;
+ 
+     assert_eq!(2, second,
+         "This is not the 2nd number in the tuple!")
+diff --git a/exercises/quiz1.rs b/exercises/quiz1.rs
+index a9904b8..084263f 100644
+--- a/exercises/quiz1.rs
++++ b/exercises/quiz1.rs
+@@ -13,10 +13,17 @@
+ //
+ // No hints this time ;)
+ 
+-// I AM NOT DONE
+ 
+ // Put your function here!
+-// fn calculate_price_of_apples {
++fn calculate_price_of_apples(number_of_apples: u32) -> u32{
++    let price = if number_of_apples > 40 {
++       number_of_apples 
++    } else {
++        number_of_apples * 2
++    };
++
++    price
++}
+ 
+ // Don't modify this function!
+ #[test]
+diff --git a/exercises/quiz2.rs b/exercises/quiz2.rs
+index 29925ca..76b53da 100644
+--- a/exercises/quiz2.rs
++++ b/exercises/quiz2.rs
+@@ -20,8 +20,14 @@
+ //
+ // No hints this time!
+ 
+-// I AM NOT DONE
+-
++/**
++ * 仔细看看这道题涉及的知识点
++ * 
++ * vec 类型
++ * 元组 
++ * match 控制流, if let 控制流
++ * 
++ */
+ pub enum Command {
+     Uppercase,
+     Trim,
+@@ -32,11 +38,26 @@ mod my_module {
+     use super::Command;
+ 
+     // TODO: Complete the function signature!
+-    pub fn transformer(input: ???) -> ??? {
++    pub fn transformer(input: Vec<(String, Command)>) -> Vec<String> {
+         // TODO: Complete the output declaration!
+-        let mut output: ??? = vec![];
++        let mut output: Vec<String> = vec![];
++
+         for (string, command) in input.iter() {
+-            // TODO: Complete the function body. You can do it!
++            // TODO: Complete the function body. You can do it! 
++            match command {
++                Command::Uppercase => output.push(string.to_uppercase()),
++                Command::Trim => output.push(string.trim().to_string()),
++                Command::Append(count) => {
++                    let mut new_string = string.clone();
++                    let mut count = *count as i8;
++                    while count > 0 {
++                        new_string.push_str("bar");
++                        count -= 1;
++                    }
++                    output.push(new_string);
++                },
++                _ => (),
++            }     
+         }
+         output
+     }
+@@ -45,7 +66,7 @@ mod my_module {
+ #[cfg(test)]
+ mod tests {
+     // TODO: What do we need to import to have `transformer` in scope?
+-    use ???;
++    use crate::my_module::transformer;
+     use super::Command;
+ 
+     #[test]
+diff --git a/exercises/strings/strings1.rs b/exercises/strings/strings1.rs
+index f50e1fa..5d48b91 100644
+--- a/exercises/strings/strings1.rs
++++ b/exercises/strings/strings1.rs
+@@ -5,7 +5,6 @@
+ // Execute `rustlings hint strings1` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
+ 
+ fn main() {
+     let answer = current_favorite_color();
+@@ -13,5 +12,5 @@ fn main() {
+ }
+ 
+ fn current_favorite_color() -> String {
+-    "blue"
++    "blue".to_string()
+ }
+diff --git a/exercises/strings/strings2.rs b/exercises/strings/strings2.rs
+index 4d95d16..10f0a73 100644
+--- a/exercises/strings/strings2.rs
++++ b/exercises/strings/strings2.rs
+@@ -5,11 +5,10 @@
+ // Execute `rustlings hint strings2` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
+ 
+ fn main() {
+     let word = String::from("green"); // Try not changing this line :)
+-    if is_a_color_word(word) {
++    if is_a_color_word(&word) {
+         println!("That is a color word I know!");
+     } else {
+         println!("That is not a color word I know.");
+diff --git a/exercises/strings/strings3.rs b/exercises/strings/strings3.rs
+index b29f932..d3f845e 100644
+--- a/exercises/strings/strings3.rs
++++ b/exercises/strings/strings3.rs
+@@ -3,21 +3,39 @@
+ // Execute `rustlings hint strings3` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
+ 
+ fn trim_me(input: &str) -> String {
+     // TODO: Remove whitespace from both ends of a string!
+-    ???
++    (&input.trim()).to_string()
+ }
+ 
+ fn compose_me(input: &str) -> String {
+     // TODO: Add " world!" to the string! There's multiple ways to do this!
+-    ???
++    
++    /* No.1 method */
++    // let mut input = String::from(input);
++    // input.push_str(" world!");
++    // input
++
++    /* No.2 method */
++    // let mut input = String::from(input);
++    // let world = String::from(" world!");
++    // // input += &world;
++    // input = input + &world;
++    // input
++
++    /* No.3 method */
++    let mut input = String::from(input);
++    let world = String::from(" world!");
++    input = format!("{input}{world}");
++    input
+ }
+ 
+ fn replace_me(input: &str) -> String {
+     // TODO: Replace "cars" in the string with "balloons"!
+-    ???
++    let mut input = String::from(input);
++    input = input.replace("cars", "balloons");
++    input
+ }
+ 
+ #[cfg(test)]
+diff --git a/exercises/strings/strings4.rs b/exercises/strings/strings4.rs
+index e8c54ac..3f91338 100644
+--- a/exercises/strings/strings4.rs
++++ b/exercises/strings/strings4.rs
+@@ -7,7 +7,6 @@
+ //
+ // No hints this time!
+ 
+-// I AM NOT DONE
+ 
+ fn string_slice(arg: &str) {
+     println!("{}", arg);
+@@ -17,14 +16,15 @@ fn string(arg: String) {
+ }
+ 
+ fn main() {
+-    ???("blue");
+-    ???("red".to_string());
+-    ???(String::from("hi"));
+-    ???("rust is fun!".to_owned());
+-    ???("nice weather".into());
+-    ???(format!("Interpolation {}", "Station"));
+-    ???(&String::from("abc")[0..1]);
+-    ???("  hello there ".trim());
+-    ???("Happy Monday!".to_string().replace("Mon", "Tues"));
+-    ???("mY sHiFt KeY iS sTiCkY".to_lowercase());
++    string_slice("blue");
++    string("red".to_string());
++    string(String::from("hi"));
++    string("rust is fun!".to_owned());
++    string("nice weather".into());
++    string(format!("Interpolation {}", "Station"));
++    string_slice(&String::from("abc")[0..1]);
++    string_slice("  hello there ".trim());
++    string("Happy Monday!".to_string().replace("Mon", "Tues"));
++    string("mY sHiFt KeY iS sTiCkY".to_lowercase());
+ }
++
+diff --git a/exercises/structs/structs1.rs b/exercises/structs/structs1.rs
+index 5fa5821..445f9bd 100644
+--- a/exercises/structs/structs1.rs
++++ b/exercises/structs/structs1.rs
+@@ -5,13 +5,15 @@
+ // Execute `rustlings hint structs1` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
+ 
+ struct ColorClassicStruct {
+     // TODO: Something goes here
++    red: u32,
++    green: u32,
++    blue: u32,
+ }
+ 
+-struct ColorTupleStruct(/* TODO: Something goes here */);
++struct ColorTupleStruct(u32, u32, u32);
+ 
+ #[derive(Debug)]
+ struct UnitLikeStruct;
+@@ -23,7 +25,11 @@ mod tests {
+     #[test]
+     fn classic_c_structs() {
+         // TODO: Instantiate a classic c struct!
+-        // let green =
++        let green = ColorClassicStruct{
++            red: 0,
++            green: 255,
++            blue: 0,
++        };
+ 
+         assert_eq!(green.red, 0);
+         assert_eq!(green.green, 255);
+@@ -33,7 +39,7 @@ mod tests {
+     #[test]
+     fn tuple_structs() {
+         // TODO: Instantiate a tuple struct!
+-        // let green =
++        let green = ColorTupleStruct(0, 255, 0);
+ 
+         assert_eq!(green.0, 0);
+         assert_eq!(green.1, 255);
+@@ -43,7 +49,7 @@ mod tests {
+     #[test]
+     fn unit_structs() {
+         // TODO: Instantiate a unit-like struct!
+-        // let unit_like_struct =
++        let unit_like_struct = UnitLikeStruct;
+         let message = format!("{:?}s are fun!", unit_like_struct);
+ 
+         assert_eq!(message, "UnitLikeStructs are fun!");
+diff --git a/exercises/structs/structs2.rs b/exercises/structs/structs2.rs
+index 328567f..2e9bbf7 100644
+--- a/exercises/structs/structs2.rs
++++ b/exercises/structs/structs2.rs
+@@ -5,7 +5,6 @@
+ // Execute `rustlings hint structs2` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
+ 
+ #[derive(Debug)]
+ struct Order {
+@@ -38,7 +37,15 @@ mod tests {
+     fn your_order() {
+         let order_template = create_order_template();
+         // TODO: Create your own order using the update syntax and template above!
+-        // let your_order =
++        let your_order = Order {
++            name: String::from("Hacker in Rust"),
++            year: order_template.year,
++            made_by_phone: order_template.made_by_phone,
++            made_by_mobile: order_template.made_by_mobile,
++            made_by_email: order_template.made_by_email,
++            item_number: order_template.item_number,
++            count: 1,
++        };
+         assert_eq!(your_order.name, "Hacker in Rust");
+         assert_eq!(your_order.year, order_template.year);
+         assert_eq!(your_order.made_by_phone, order_template.made_by_phone);
+diff --git a/exercises/structs/structs3.rs b/exercises/structs/structs3.rs
+index 4851317..e535b0b 100644
+--- a/exercises/structs/structs3.rs
++++ b/exercises/structs/structs3.rs
+@@ -7,7 +7,6 @@
+ // Execute `rustlings hint structs3` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
+ 
+ #[derive(Debug)]
+ struct Package {
+@@ -29,12 +28,18 @@ impl Package {
+         }
+     }
+ 
+-    fn is_international(&self) -> ??? {
++    fn is_international(&self) -> bool {
+         // Something goes here...
++        if self.sender_country != self.recipient_country {
++            true
++        } else {
++            false
++        }
+     }
+ 
+-    fn get_fees(&self, cents_per_gram: i32) -> ??? {
++    fn get_fees(&self, cents_per_gram: i32) -> i32 {
+         // Something goes here...
++        cents_per_gram * 1500
+     }
+ }
+ 
+diff --git a/exercises/variables/variables1.rs b/exercises/variables/variables1.rs
+index b3e089a..8cd5c95 100644
+--- a/exercises/variables/variables1.rs
++++ b/exercises/variables/variables1.rs
+@@ -5,9 +5,8 @@
+ // Execute `rustlings hint variables1` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
+ 
+ fn main() {
+-    x = 5;
++    let x = 5; // let 关键字给变量赋值
+     println!("x has the value {}", x);
+ }
+diff --git a/exercises/variables/variables2.rs b/exercises/variables/variables2.rs
+index e1c23ed..1ba69e9 100644
+--- a/exercises/variables/variables2.rs
++++ b/exercises/variables/variables2.rs
+@@ -3,10 +3,9 @@
+ // Execute `rustlings hint variables2` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
+ 
+ fn main() {
+-    let x;
++    let x = 10i32; // 类型
+     if x == 10 {
+         println!("x is ten!");
+     } else {
+diff --git a/exercises/variables/variables3.rs b/exercises/variables/variables3.rs
+index 86bed41..e85feb4 100644
+--- a/exercises/variables/variables3.rs
++++ b/exercises/variables/variables3.rs
+@@ -3,9 +3,10 @@
+ // Execute `rustlings hint variables3` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
+ 
+ fn main() {
+-    let x: i32;
+-    println!("Number {}", x);
++    let x: i32 = 0; 
++    // let 变量必须有值 除非在变量前加 _ 如下例
++    let _unused: i32;
++    print!("Number {}", x);
+ }
+diff --git a/exercises/variables/variables4.rs b/exercises/variables/variables4.rs
+index 5394f39..b6a0cbc 100644
+--- a/exercises/variables/variables4.rs
++++ b/exercises/variables/variables4.rs
+@@ -3,10 +3,10 @@
+ // Execute `rustlings hint variables4` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
+ 
+ fn main() {
+-    let x = 3;
++    let mut x = 3;
++    // mut 使变量在被赋值后可再赋新值
+     println!("Number {}", x);
+     x = 5; // don't change this line
+     println!("Number {}", x);
+diff --git a/exercises/variables/variables5.rs b/exercises/variables/variables5.rs
+index a29b38b..000b8ef 100644
+--- a/exercises/variables/variables5.rs
++++ b/exercises/variables/variables5.rs
+@@ -3,11 +3,10 @@
+ // Execute `rustlings hint variables5` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
+-
++// 在 rust 中 可以声明同名但不同类型的变量
+ fn main() {
+     let number = "T-H-R-E-E"; // don't change this line
+     println!("Spell a Number : {}", number);
+-    number = 3; // don't rename this variable
+-    println!("Number plus two is : {}", number + 2);
++    let number = 3; // don't rename this variable
++    print!("Number plus two is : {}", number + 2);
+ }
+diff --git a/exercises/variables/variables6.rs b/exercises/variables/variables6.rs
+index 853183b..0642a54 100644
+--- a/exercises/variables/variables6.rs
++++ b/exercises/variables/variables6.rs
+@@ -3,9 +3,14 @@
+ // Execute `rustlings hint variables6` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
+ 
+-const NUMBER = 3;
++/**
++ * 这是错误的
++ * const NUMBER = 3u32;
++ */
++
++// const 常量必须显式表明类型
++const NUMBER: u32 = 3;
+ fn main() {
+-    println!("Number {}", NUMBER);
++    print!("Number {}", NUMBER);
+ }
+diff --git a/exercises/vecs/vecs1.rs b/exercises/vecs/vecs1.rs
+index 65b7a7f..8b7d8e1 100644
+--- a/exercises/vecs/vecs1.rs
++++ b/exercises/vecs/vecs1.rs
+@@ -7,11 +7,10 @@
+ //
+ // Execute `rustlings hint vecs1` or use the `hint` watch subcommand for a hint.
+ 
+-// I AM NOT DONE
+ 
+ fn array_and_vec() -> ([i32; 4], Vec<i32>) {
+     let a = [10, 20, 30, 40]; // a plain array
+-    let v = // TODO: declare your vector here with the macro for vectors
++    let v = vec![10, 20, 30, 40];// TODO: declare your vector here with the macro for vectors
+ 
+     (a, v)
+ }
+diff --git a/exercises/vecs/vecs2.rs b/exercises/vecs/vecs2.rs
+index e92c970..79f5422 100644
+--- a/exercises/vecs/vecs2.rs
++++ b/exercises/vecs/vecs2.rs
+@@ -7,24 +7,30 @@
+ //
+ // Execute `rustlings hint vecs2` or use the `hint` watch subcommand for a hint.
+ 
+-// I AM NOT DONE
+-
++// 学习使用 iter_mut 替换 Vector 动态数组的元素
+ fn vec_loop(mut v: Vec<i32>) -> Vec<i32> {
+     for element in v.iter_mut() {
+         // TODO: Fill this up so that each element in the Vec `v` is
+         // multiplied by 2.
+-        ???
++        *element *= 2;
+     }
+ 
+     // At this point, `v` should be equal to [4, 8, 12, 16, 20].
+     v
+ }
+ 
++/**
++ * 使用 map()
++ * fn map<B, F>(self, f: F) -> Map<Self, F> ⓘ
++ * where
++ *  Self: Sized,
++ *  F: FnMut(Self::Item) -> B,
++ */
+ fn vec_map(v: &Vec<i32>) -> Vec<i32> {
+     v.iter().map(|element| {
+         // TODO: Do the same thing as above - but instead of mutating the
+         // Vec, you can just return the new number!
+-        ???
++        element * 2
+     }).collect()
+ }
+ 

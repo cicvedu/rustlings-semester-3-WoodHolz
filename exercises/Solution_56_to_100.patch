@@ -1,0 +1,81 @@
+diff --git a/exercises/error_handling/errors6.rs b/exercises/error_handling/errors6.rs
+index 3343c2f..7bc79a4 100644
+--- a/exercises/error_handling/errors6.rs
++++ b/exercises/error_handling/errors6.rs
+@@ -9,7 +9,6 @@
+ // Execute `rustlings hint errors6` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
+ 
+ use std::num::ParseIntError;
+ 
+@@ -33,13 +32,20 @@ impl ParsePosNonzeroError {
+ fn parse_pos_nonzero(s: &str) -> Result<PositiveNonzeroInteger, ParsePosNonzeroError> {
+     // TODO: change this to return an appropriate error instead of panicking
+     // when `parse()` returns an error.
+-    let x: i64 = s.parse().unwrap();
+-    match Some(ParsePosNonzeroError) {
+-        ParseInt(x) => PositiveNonzeroInteger::new(x).map_err(ParsePosNonzeroError::from_parseint),
++    /* 1 */
++    // let x: i64 = s.parse().map_err(|err| ParsePosNonzeroError::from_parseint(err))?;
++    /* 2 */
++    // let x: i64 = s.parse().map_err(ParsePosNonzeroError::from_parseint)?;
++    /* 3 */
++    let x: i64 = s.parse()?;
++    PositiveNonzeroInteger::new(x).map_err(ParsePosNonzeroError::from_creation)
++}
+ 
++/* 3 */
++impl From<ParseIntError> for ParsePosNonzeroError {
++    fn from(error: ParseIntError) -> Self {
++        ParsePosNonzeroError::from_parseint(error)
+     }
+-    PositiveNonzeroInteger::new(x).map_err(ParsePosNonzeroError::from_creation)
+-    
+ }
+ 
+ // Don't change anything below this line.
+diff --git a/exercises/generics/generics1.rs b/exercises/generics/generics1.rs
+index 35c1d2f..15797c2 100644
+--- a/exercises/generics/generics1.rs
++++ b/exercises/generics/generics1.rs
+@@ -6,9 +6,13 @@
+ // Execute `rustlings hint generics1` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
+ 
+ fn main() {
+-    let mut shopping_list: Vec<?> = Vec::new();
++    /* 1 */
++    // let mut shopping_list: Vec<&str> = Vec::new();
++    /* 2 */
++    let mut shopping_list = Vec::new();
+     shopping_list.push("milk");
++    // shopping_list.push("1");
++    // println!("{:?}", shopping_list.pop());
+ }
+diff --git a/exercises/generics/generics2.rs b/exercises/generics/generics2.rs
+index 074cd93..f949355 100644
+--- a/exercises/generics/generics2.rs
++++ b/exercises/generics/generics2.rs
+@@ -6,14 +6,13 @@
+ // Execute `rustlings hint generics2` or use the `hint` watch subcommand for a
+ // hint.
+ 
+-// I AM NOT DONE
+ 
+-struct Wrapper {
+-    value: u32,
++struct Wrapper<T> {
++    value: T,
+ }
+ 
+-impl Wrapper {
+-    pub fn new(value: u32) -> Self {
++impl<T> Wrapper<T> {
++    pub fn new(value: T) -> Self {
+         Wrapper { value }
+     }
+ }
