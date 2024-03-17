@@ -17,7 +17,6 @@ impl AppendBar for String {
         self.push_str("Bar");
         self
     }
-     // TODO: Implement `AppendBar` for type `String`.
 }
 
 fn main() {
