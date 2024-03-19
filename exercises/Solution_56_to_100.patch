@@ -1,460 +1,552 @@
 diff --git a/exercises/Solution_56_to_100.patch b/exercises/Solution_56_to_100.patch
-index 8d6271f..e69de29 100644
+index a685f0b..e69de29 100644
 --- a/exercises/Solution_56_to_100.patch
 +++ b/exercises/Solution_56_to_100.patch
-@@ -1,203 +0,0 @@
+@@ -1,460 +0,0 @@
 -diff --git a/exercises/Solution_56_to_100.patch b/exercises/Solution_56_to_100.patch
--index cb11db9..e69de29 100644
+-index 8d6271f..e69de29 100644
 ---- a/exercises/Solution_56_to_100.patch
 -+++ b/exercises/Solution_56_to_100.patch
--@@ -1,81 +0,0 @@
---diff --git a/exercises/error_handling/errors6.rs b/exercises/error_handling/errors6.rs
---index 3343c2f..7bc79a4 100644
------ a/exercises/error_handling/errors6.rs
---+++ b/exercises/error_handling/errors6.rs
---@@ -9,7 +9,6 @@
--- // Execute `rustlings hint errors6` or use the `hint` watch subcommand for a
+-@@ -1,203 +0,0 @@
+--diff --git a/exercises/Solution_56_to_100.patch b/exercises/Solution_56_to_100.patch
+--index cb11db9..e69de29 100644
+----- a/exercises/Solution_56_to_100.patch
+--+++ b/exercises/Solution_56_to_100.patch
+--@@ -1,81 +0,0 @@
+---diff --git a/exercises/error_handling/errors6.rs b/exercises/error_handling/errors6.rs
+---index 3343c2f..7bc79a4 100644
+------ a/exercises/error_handling/errors6.rs
+---+++ b/exercises/error_handling/errors6.rs
+---@@ -9,7 +9,6 @@
+--- // Execute `rustlings hint errors6` or use the `hint` watch subcommand for a
+--- // hint.
+--- 
+----// I AM NOT DONE
+--- 
+--- use std::num::ParseIntError;
+--- 
+---@@ -33,13 +32,20 @@ impl ParsePosNonzeroError {
+--- fn parse_pos_nonzero(s: &str) -> Result<PositiveNonzeroInteger, ParsePosNonzeroError> {
+---     // TODO: change this to return an appropriate error instead of panicking
+---     // when `parse()` returns an error.
+----    let x: i64 = s.parse().unwrap();
+----    match Some(ParsePosNonzeroError) {
+----        ParseInt(x) => PositiveNonzeroInteger::new(x).map_err(ParsePosNonzeroError::from_parseint),
+---+    /* 1 */
+---+    // let x: i64 = s.parse().map_err(|err| ParsePosNonzeroError::from_parseint(err))?;
+---+    /* 2 */
+---+    // let x: i64 = s.parse().map_err(ParsePosNonzeroError::from_parseint)?;
+---+    /* 3 */
+---+    let x: i64 = s.parse()?;
+---+    PositiveNonzeroInteger::new(x).map_err(ParsePosNonzeroError::from_creation)
+---+}
+--- 
+---+/* 3 */
+---+impl From<ParseIntError> for ParsePosNonzeroError {
+---+    fn from(error: ParseIntError) -> Self {
+---+        ParsePosNonzeroError::from_parseint(error)
+---     }
+----    PositiveNonzeroInteger::new(x).map_err(ParsePosNonzeroError::from_creation)
+----    
+--- }
+--- 
+--- // Don't change anything below this line.
+---diff --git a/exercises/generics/generics1.rs b/exercises/generics/generics1.rs
+---index 35c1d2f..15797c2 100644
+------ a/exercises/generics/generics1.rs
+---+++ b/exercises/generics/generics1.rs
+---@@ -6,9 +6,13 @@
+--- // Execute `rustlings hint generics1` or use the `hint` watch subcommand for a
+--- // hint.
+--- 
+----// I AM NOT DONE
+--- 
+--- fn main() {
+----    let mut shopping_list: Vec<?> = Vec::new();
+---+    /* 1 */
+---+    // let mut shopping_list: Vec<&str> = Vec::new();
+---+    /* 2 */
+---+    let mut shopping_list = Vec::new();
+---     shopping_list.push("milk");
+---+    // shopping_list.push("1");
+---+    // println!("{:?}", shopping_list.pop());
+--- }
+---diff --git a/exercises/generics/generics2.rs b/exercises/generics/generics2.rs
+---index 074cd93..f949355 100644
+------ a/exercises/generics/generics2.rs
+---+++ b/exercises/generics/generics2.rs
+---@@ -6,14 +6,13 @@
+--- // Execute `rustlings hint generics2` or use the `hint` watch subcommand for a
+--- // hint.
+--- 
+----// I AM NOT DONE
+--- 
+----struct Wrapper {
+----    value: u32,
+---+struct Wrapper<T> {
+---+    value: T,
+--- }
+--- 
+----impl Wrapper {
+----    pub fn new(value: u32) -> Self {
+---+impl<T> Wrapper<T> {
+---+    pub fn new(value: T) -> Self {
+---         Wrapper { value }
+---     }
+--- }
+--diff --git a/exercises/traits/traits1.rs b/exercises/traits/traits1.rs
+--index 37dfcbf..fe8ad37 100644
+----- a/exercises/traits/traits1.rs
+--+++ b/exercises/traits/traits1.rs
+--@@ -7,14 +7,17 @@
+-- // Execute `rustlings hint traits1` or use the `hint` watch subcommand for a
 -- // hint.
 -- 
 ---// I AM NOT DONE
 -- 
--- use std::num::ParseIntError;
--- 
---@@ -33,13 +32,20 @@ impl ParsePosNonzeroError {
--- fn parse_pos_nonzero(s: &str) -> Result<PositiveNonzeroInteger, ParsePosNonzeroError> {
---     // TODO: change this to return an appropriate error instead of panicking
---     // when `parse()` returns an error.
----    let x: i64 = s.parse().unwrap();
----    match Some(ParsePosNonzeroError) {
----        ParseInt(x) => PositiveNonzeroInteger::new(x).map_err(ParsePosNonzeroError::from_parseint),
---+    /* 1 */
---+    // let x: i64 = s.parse().map_err(|err| ParsePosNonzeroError::from_parseint(err))?;
---+    /* 2 */
---+    // let x: i64 = s.parse().map_err(ParsePosNonzeroError::from_parseint)?;
---+    /* 3 */
---+    let x: i64 = s.parse()?;
---+    PositiveNonzeroInteger::new(x).map_err(ParsePosNonzeroError::from_creation)
---+}
--- 
---+/* 3 */
---+impl From<ParseIntError> for ParsePosNonzeroError {
---+    fn from(error: ParseIntError) -> Self {
---+        ParsePosNonzeroError::from_parseint(error)
---     }
----    PositiveNonzeroInteger::new(x).map_err(ParsePosNonzeroError::from_creation)
----    
+-- trait AppendBar {
+--     fn append_bar(self) -> Self;
 -- }
 -- 
--- // Don't change anything below this line.
---diff --git a/exercises/generics/generics1.rs b/exercises/generics/generics1.rs
---index 35c1d2f..15797c2 100644
------ a/exercises/generics/generics1.rs
---+++ b/exercises/generics/generics1.rs
---@@ -6,9 +6,13 @@
--- // Execute `rustlings hint generics1` or use the `hint` watch subcommand for a
--- // hint.
--- 
----// I AM NOT DONE
+-- impl AppendBar for String {
+---    // TODO: Implement `AppendBar` for type `String`.
+--+    fn append_bar(mut self) -> Self {
+--+        self.push_str("Bar");
+--+        self
+--+    }
+--+     // TODO: Implement `AppendBar` for type `String`.
+-- }
 -- 
 -- fn main() {
----    let mut shopping_list: Vec<?> = Vec::new();
---+    /* 1 */
---+    // let mut shopping_list: Vec<&str> = Vec::new();
---+    /* 2 */
---+    let mut shopping_list = Vec::new();
---     shopping_list.push("milk");
---+    // shopping_list.push("1");
---+    // println!("{:?}", shopping_list.pop());
+--diff --git a/exercises/traits/traits2.rs b/exercises/traits/traits2.rs
+--index 3e35f8e..8fc382a 100644
+----- a/exercises/traits/traits2.rs
+--+++ b/exercises/traits/traits2.rs
+--@@ -8,13 +8,19 @@
+-- //
+-- // Execute `rustlings hint traits2` or use the `hint` watch subcommand for a hint.
+-- 
+---// I AM NOT DONE
+-- 
+-- trait AppendBar {
+--     fn append_bar(self) -> Self;
 -- }
---diff --git a/exercises/generics/generics2.rs b/exercises/generics/generics2.rs
---index 074cd93..f949355 100644
------ a/exercises/generics/generics2.rs
---+++ b/exercises/generics/generics2.rs
---@@ -6,14 +6,13 @@
--- // Execute `rustlings hint generics2` or use the `hint` watch subcommand for a
+-- 
+-- // TODO: Implement trait `AppendBar` for a vector of strings.
+--+impl AppendBar for Vec<String> {
+--+    fn append_bar(mut self) -> Self {
+--+        self.push("Bar".to_string());
+--+        self
+--+    } 
+--+}
+--+
+-- 
+-- #[cfg(test)]
+-- mod tests {
+--diff --git a/exercises/traits/traits3.rs b/exercises/traits/traits3.rs
+--index 4e2b06b..0171dab 100644
+----- a/exercises/traits/traits3.rs
+--+++ b/exercises/traits/traits3.rs
+--@@ -8,10 +8,11 @@
+-- // Execute `rustlings hint traits3` or use the `hint` watch subcommand for a
+-- // hint.
+-- 
+---// I AM NOT DONE
+---
+--+/* defalt implement */
+-- pub trait Licensed {
+---    fn licensing_info(&self) -> String;
+--+    fn licensing_info(&self) -> String {
+--+        String::from("Some information") 
+--+    }
+-- }
+-- 
+-- struct SomeSoftware {
+--diff --git a/exercises/traits/traits4.rs b/exercises/traits/traits4.rs
+--index 4bda3e5..27ce6bb 100644
+----- a/exercises/traits/traits4.rs
+--+++ b/exercises/traits/traits4.rs
+--@@ -7,7 +7,6 @@
+-- // Execute `rustlings hint traits4` or use the `hint` watch subcommand for a
 -- // hint.
 -- 
 ---// I AM NOT DONE
 -- 
----struct Wrapper {
----    value: u32,
---+struct Wrapper<T> {
---+    value: T,
+-- pub trait Licensed {
+--     fn licensing_info(&self) -> String {
+--@@ -23,7 +22,11 @@ impl Licensed for SomeSoftware {}
+-- impl Licensed for OtherSoftware {}
+-- 
+-- // YOU MAY ONLY CHANGE THE NEXT LINE
+---fn compare_license_types(software: ??, software_two: ??) -> bool {
+--+fn compare_license_types<T, U>(software: T, software_two: U) -> bool 
+--+where 
+--+    T: Licensed,
+--+    U: Licensed,
+--+{
+--     software.licensing_info() == software_two.licensing_info()
 -- }
 -- 
----impl Wrapper {
----    pub fn new(value: u32) -> Self {
---+impl<T> Wrapper<T> {
---+    pub fn new(value: T) -> Self {
---         Wrapper { value }
---     }
+--diff --git a/exercises/traits/traits5.rs b/exercises/traits/traits5.rs
+--index df18380..7a1fe1b 100644
+----- a/exercises/traits/traits5.rs
+--+++ b/exercises/traits/traits5.rs
+--@@ -7,7 +7,6 @@
+-- // Execute `rustlings hint traits5` or use the `hint` watch subcommand for a
+-- // hint.
+-- 
+---// I AM NOT DONE
+-- 
+-- pub trait SomeTrait {
+--     fn some_function(&self) -> bool {
+--@@ -30,7 +29,10 @@ impl SomeTrait for OtherStruct {}
+-- impl OtherTrait for OtherStruct {}
+-- 
+-- // YOU MAY ONLY CHANGE THE NEXT LINE
+---fn some_func(item: ??) -> bool {
+--+fn some_func <T>(item: T) -> bool 
+--+where
+--+    T: SomeTrait + OtherTrait 
+--+{
+--     item.some_function() && item.other_function()
 -- }
--diff --git a/exercises/traits/traits1.rs b/exercises/traits/traits1.rs
--index 37dfcbf..fe8ad37 100644
----- a/exercises/traits/traits1.rs
--+++ b/exercises/traits/traits1.rs
--@@ -7,14 +7,17 @@
-- // Execute `rustlings hint traits1` or use the `hint` watch subcommand for a
+-- 
+-diff --git a/exercises/iterators/iterators1.rs b/exercises/iterators/iterators1.rs
+-index b3f698b..09293ad 100644
+---- a/exercises/iterators/iterators1.rs
+-+++ b/exercises/iterators/iterators1.rs
+-@@ -9,17 +9,16 @@
+- // Execute `rustlings hint iterators1` or use the `hint` watch subcommand for a
 - // hint.
 - 
 --// I AM NOT DONE
 - 
-- trait AppendBar {
--     fn append_bar(self) -> Self;
-- }
-- 
-- impl AppendBar for String {
---    // TODO: Implement `AppendBar` for type `String`.
--+    fn append_bar(mut self) -> Self {
--+        self.push_str("Bar");
--+        self
--+    }
--+     // TODO: Implement `AppendBar` for type `String`.
-- }
-- 
 - fn main() {
--diff --git a/exercises/traits/traits2.rs b/exercises/traits/traits2.rs
--index 3e35f8e..8fc382a 100644
----- a/exercises/traits/traits2.rs
--+++ b/exercises/traits/traits2.rs
--@@ -8,13 +8,19 @@
-- //
-- // Execute `rustlings hint traits2` or use the `hint` watch subcommand for a hint.
+-     let my_fav_fruits = vec!["banana", "custard apple", "avocado", "peach", "raspberry"];
+- 
+--    let mut my_iterable_fav_fruits = ???;   // TODO: Step 1
+-+    let mut my_iterable_fav_fruits = my_fav_fruits.iter();   // TODO: Step 1
+- 
+-     assert_eq!(my_iterable_fav_fruits.next(), Some(&"banana"));
+--    assert_eq!(my_iterable_fav_fruits.next(), ???);     // TODO: Step 2
+-+    assert_eq!(my_iterable_fav_fruits.next(), Some(&"custard apple"));     // TODO: Step 2
+-     assert_eq!(my_iterable_fav_fruits.next(), Some(&"avocado"));
+--    assert_eq!(my_iterable_fav_fruits.next(), ???);     // TODO: Step 3
+-+    assert_eq!(my_iterable_fav_fruits.next(), Some(&"peach"));     // TODO: Step 3
+-     assert_eq!(my_iterable_fav_fruits.next(), Some(&"raspberry"));
+--    assert_eq!(my_iterable_fav_fruits.next(), ???);     // TODO: Step 4
+-+    assert_eq!(my_iterable_fav_fruits.next(), None);     // TODO: Step 4
+- }
+-diff --git a/exercises/iterators/iterators2.rs b/exercises/iterators/iterators2.rs
+-index dda82a0..ba64d60 100644
+---- a/exercises/iterators/iterators2.rs
+-+++ b/exercises/iterators/iterators2.rs
+-@@ -15,7 +15,7 @@ pub fn capitalize_first(input: &str) -> String {
+-     let mut c = input.chars();
+-     match c.next() {
+-         None => String::new(),
+--        Some(first) => ???,
+-+        Some(first) => first.to_uppercase().to_string() + c.as_str(),
+-     }
+- }
+- 
+-@@ -24,7 +24,7 @@ pub fn capitalize_first(input: &str) -> String {
+- // Return a vector of strings.
+- // ["hello", "world"] -> ["Hello", "World"]
+- pub fn capitalize_words_vector(words: &[&str]) -> Vec<String> {
+--    vec![]
+-+    words.into_iter().map(|word| )
+- }
+- 
+- // Step 3.
+-diff --git a/exercises/lifetimes/lifetimes1.rs b/exercises/lifetimes/lifetimes1.rs
+-index 87bde49..357fa8e 100644
+---- a/exercises/lifetimes/lifetimes1.rs
+-+++ b/exercises/lifetimes/lifetimes1.rs
+-@@ -8,9 +8,8 @@
+- // Execute `rustlings hint lifetimes1` or use the `hint` watch subcommand for a
+- // hint.
 - 
 --// I AM NOT DONE
 - 
-- trait AppendBar {
--     fn append_bar(self) -> Self;
+--fn longest(x: &str, y: &str) -> &str {
+-+fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
+-     if x.len() > y.len() {
+-         x
+-     } else {
+-diff --git a/exercises/lifetimes/lifetimes2.rs b/exercises/lifetimes/lifetimes2.rs
+-index 4f3d8c1..e9019ed 100644
+---- a/exercises/lifetimes/lifetimes2.rs
+-+++ b/exercises/lifetimes/lifetimes2.rs
+-@@ -6,7 +6,6 @@
+- // Execute `rustlings hint lifetimes2` or use the `hint` watch subcommand for a
+- // hint.
+- 
+--// I AM NOT DONE
+- 
+- fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
+-     if x.len() > y.len() {
+-@@ -19,9 +18,11 @@ fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
+- fn main() {
+-     let string1 = String::from("long string is long");
+-     let result;
+-+    // let string2 = String::from("xyz");
+-     {
+-         let string2 = String::from("xyz");
+-         result = longest(string1.as_str(), string2.as_str());
+-+        println!("The longest string is '{}'", result);
+-     }
+--    println!("The longest string is '{}'", result);
+-+    // println!("The longest string is '{}'", result);
+- }
+-diff --git a/exercises/lifetimes/lifetimes3.rs b/exercises/lifetimes/lifetimes3.rs
+-index 9c59f9c..2507d59 100644
+---- a/exercises/lifetimes/lifetimes3.rs
+-+++ b/exercises/lifetimes/lifetimes3.rs
+-@@ -5,11 +5,10 @@
+- // Execute `rustlings hint lifetimes3` or use the `hint` watch subcommand for a
+- // hint.
+- 
+--// I AM NOT DONE
+- 
+--struct Book {
+--    author: &str,
+--    title: &str,
+-+struct Book<'a> {
+-+    author: &'a str,
+-+    title: &'a str,
 - }
 - 
-- // TODO: Implement trait `AppendBar` for a vector of strings.
--+impl AppendBar for Vec<String> {
--+    fn append_bar(mut self) -> Self {
--+        self.push("Bar".to_string());
--+        self
--+    } 
--+}
--+
+- fn main() {
+-diff --git a/exercises/quiz3.rs b/exercises/quiz3.rs
+-index 3b01d31..9c5e576 100644
+---- a/exercises/quiz3.rs
+-+++ b/exercises/quiz3.rs
+-@@ -16,16 +16,17 @@
+- //
+- // Execute `rustlings hint quiz3` or use the `hint` watch subcommand for a hint.
 - 
-- #[cfg(test)]
-- mod tests {
--diff --git a/exercises/traits/traits3.rs b/exercises/traits/traits3.rs
--index 4e2b06b..0171dab 100644
----- a/exercises/traits/traits3.rs
--+++ b/exercises/traits/traits3.rs
--@@ -8,10 +8,11 @@
-- // Execute `rustlings hint traits3` or use the `hint` watch subcommand for a
+--// I AM NOT DONE
+- 
+--pub struct ReportCard {
+--    pub grade: f32,
+-+use std::fmt::Display;
+-+
+-+pub struct ReportCard<T> {
+-+    pub grade: T,
+-     pub student_name: String,
+-     pub student_age: u8,
+- }
+- 
+--impl ReportCard {
+--    pub fn print(&self) -> String {
+-+impl<T: Display> ReportCard<T> {
+-+    fn print(&self) -> String {
+-         format!("{} ({}) - achieved a grade of {}",
+-             &self.student_name, &self.student_age, &self.grade)
+-     }
+-@@ -52,7 +53,7 @@ mod tests {
+-     fn generate_alphabetic_report_card() {
+-         // TODO: Make sure to change the grade here after you finish the exercise.
+-         let report_card = ReportCard {
+--            grade: 2.1,
+-+            grade: "A+",
+-             student_name: "Gary Plotter".to_string(),
+-             student_age: 11,
+-         };
+-diff --git a/exercises/tests/tests1.rs b/exercises/tests/tests1.rs
+-index 810277a..eab3ba7 100644
+---- a/exercises/tests/tests1.rs
+-+++ b/exercises/tests/tests1.rs
+-@@ -10,12 +10,10 @@
+- // Execute `rustlings hint tests1` or use the `hint` watch subcommand for a
 - // hint.
 - 
 --// I AM NOT DONE
 --
--+/* defalt implement */
-- pub trait Licensed {
---    fn licensing_info(&self) -> String;
--+    fn licensing_info(&self) -> String {
--+        String::from("Some information") 
--+    }
+- #[cfg(test)]
+- mod tests {
+-     #[test]
+-     fn you_can_assert() {
+--        assert!();
+-+        assert!(true);
+-     }
 - }
-- 
-- struct SomeSoftware {
--diff --git a/exercises/traits/traits4.rs b/exercises/traits/traits4.rs
--index 4bda3e5..27ce6bb 100644
----- a/exercises/traits/traits4.rs
--+++ b/exercises/traits/traits4.rs
--@@ -7,7 +7,6 @@
-- // Execute `rustlings hint traits4` or use the `hint` watch subcommand for a
+-diff --git a/exercises/tests/tests2.rs b/exercises/tests/tests2.rs
+-index f8024e9..0777dae 100644
+---- a/exercises/tests/tests2.rs
+-+++ b/exercises/tests/tests2.rs
+-@@ -6,12 +6,11 @@
+- // Execute `rustlings hint tests2` or use the `hint` watch subcommand for a
 - // hint.
 - 
 --// I AM NOT DONE
 - 
-- pub trait Licensed {
--     fn licensing_info(&self) -> String {
--@@ -23,7 +22,11 @@ impl Licensed for SomeSoftware {}
-- impl Licensed for OtherSoftware {}
-- 
-- // YOU MAY ONLY CHANGE THE NEXT LINE
---fn compare_license_types(software: ??, software_two: ??) -> bool {
--+fn compare_license_types<T, U>(software: T, software_two: U) -> bool 
--+where 
--+    T: Licensed,
--+    U: Licensed,
--+{
--     software.licensing_info() == software_two.licensing_info()
+- #[cfg(test)]
+- mod tests {
+-     #[test]
+-     fn you_can_assert_eq() {
+--        assert_eq!();
+-+        assert_eq!(true, true);
+-     }
 - }
-- 
--diff --git a/exercises/traits/traits5.rs b/exercises/traits/traits5.rs
--index df18380..7a1fe1b 100644
----- a/exercises/traits/traits5.rs
--+++ b/exercises/traits/traits5.rs
+-diff --git a/exercises/tests/tests3.rs b/exercises/tests/tests3.rs
+-index 4013e38..2c1b298 100644
+---- a/exercises/tests/tests3.rs
+-+++ b/exercises/tests/tests3.rs
 -@@ -7,7 +7,6 @@
-- // Execute `rustlings hint traits5` or use the `hint` watch subcommand for a
+- // Execute `rustlings hint tests3` or use the `hint` watch subcommand for a
 - // hint.
 - 
 --// I AM NOT DONE
 - 
-- pub trait SomeTrait {
--     fn some_function(&self) -> bool {
--@@ -30,7 +29,10 @@ impl SomeTrait for OtherStruct {}
-- impl OtherTrait for OtherStruct {}
+- pub fn is_even(num: i32) -> bool {
+-     num % 2 == 0
+-@@ -19,11 +18,12 @@ mod tests {
 - 
-- // YOU MAY ONLY CHANGE THE NEXT LINE
---fn some_func(item: ??) -> bool {
--+fn some_func <T>(item: T) -> bool 
--+where
--+    T: SomeTrait + OtherTrait 
--+{
--     item.some_function() && item.other_function()
+-     #[test]
+-     fn is_true_when_even() {
+--        assert!();
+-+        assert!(is_even(2));
+-     }
+- 
+-     #[test]
+-     fn is_false_when_odd() {
+--        assert!();
+-+        // assert!(!is_even(5));
+-+        assert!(!is_even(5));
+-     }
+- }
+-diff --git a/exercises/tests/tests4.rs b/exercises/tests/tests4.rs
+-index 935d0db..7c11a59 100644
+---- a/exercises/tests/tests4.rs
+-+++ b/exercises/tests/tests4.rs
+-@@ -5,7 +5,6 @@
+- // Execute `rustlings hint tests4` or use the `hint` watch subcommand for a
+- // hint.
+- 
+--// I AM NOT DONE
+- 
+- struct Rectangle {
+-     width: i32,
+-@@ -30,17 +29,19 @@ mod tests {
+-     fn correct_width_and_height() {
+-         // This test should check if the rectangle is the size that we pass into its constructor
+-         let rect = Rectangle::new(10, 20);
+--        assert_eq!(???, 10); // check width
+--        assert_eq!(???, 20); // check height
+-+        assert_eq!(rect.width, 10); // check width
+-+        assert_eq!(rect.height, 20); // check height
+-     }
+- 
+-     #[test]
+-+    #[should_panic]
+-     fn negative_width() {
+-         // This test should check if program panics when we try to create rectangle with negative width
+-         let _rect = Rectangle::new(-10, 10);
+-     }
+- 
+-     #[test]
+-+    #[should_panic]
+-     fn negative_height() {
+-         // This test should check if program panics when we try to create rectangle with negative height
+-         let _rect = Rectangle::new(10, -10);
+-diff --git a/exercises/traits/traits1.rs b/exercises/traits/traits1.rs
+-index fe8ad37..cfbffce 100644
+---- a/exercises/traits/traits1.rs
+-+++ b/exercises/traits/traits1.rs
+-@@ -17,7 +17,6 @@ impl AppendBar for String {
+-         self.push_str("Bar");
+-         self
+-     }
+--     // TODO: Implement `AppendBar` for type `String`.
 - }
 - 
-diff --git a/exercises/iterators/iterators1.rs b/exercises/iterators/iterators1.rs
-index b3f698b..09293ad 100644
---- a/exercises/iterators/iterators1.rs
-+++ b/exercises/iterators/iterators1.rs
-@@ -9,17 +9,16 @@
- // Execute `rustlings hint iterators1` or use the `hint` watch subcommand for a
+- fn main() {
+diff --git a/exercises/iterators/iterators2.rs b/exercises/iterators/iterators2.rs
+index ba64d60..58436da 100644
+--- a/exercises/iterators/iterators2.rs
++++ b/exercises/iterators/iterators2.rs
+@@ -6,7 +6,6 @@
+ // Execute `rustlings hint iterators2` or use the `hint` watch subcommand for a
  // hint.
  
 -// I AM NOT DONE
  
- fn main() {
-     let my_fav_fruits = vec!["banana", "custard apple", "avocado", "peach", "raspberry"];
- 
--    let mut my_iterable_fav_fruits = ???;   // TODO: Step 1
-+    let mut my_iterable_fav_fruits = my_fav_fruits.iter();   // TODO: Step 1
- 
-     assert_eq!(my_iterable_fav_fruits.next(), Some(&"banana"));
--    assert_eq!(my_iterable_fav_fruits.next(), ???);     // TODO: Step 2
-+    assert_eq!(my_iterable_fav_fruits.next(), Some(&"custard apple"));     // TODO: Step 2
-     assert_eq!(my_iterable_fav_fruits.next(), Some(&"avocado"));
--    assert_eq!(my_iterable_fav_fruits.next(), ???);     // TODO: Step 3
-+    assert_eq!(my_iterable_fav_fruits.next(), Some(&"peach"));     // TODO: Step 3
-     assert_eq!(my_iterable_fav_fruits.next(), Some(&"raspberry"));
--    assert_eq!(my_iterable_fav_fruits.next(), ???);     // TODO: Step 4
-+    assert_eq!(my_iterable_fav_fruits.next(), None);     // TODO: Step 4
- }
-diff --git a/exercises/iterators/iterators2.rs b/exercises/iterators/iterators2.rs
-index dda82a0..ba64d60 100644
---- a/exercises/iterators/iterators2.rs
-+++ b/exercises/iterators/iterators2.rs
-@@ -15,7 +15,7 @@ pub fn capitalize_first(input: &str) -> String {
-     let mut c = input.chars();
-     match c.next() {
-         None => String::new(),
--        Some(first) => ???,
-+        Some(first) => first.to_uppercase().to_string() + c.as_str(),
-     }
- }
- 
-@@ -24,7 +24,7 @@ pub fn capitalize_first(input: &str) -> String {
+ // Step 1.
+ // Complete the `capitalize_first` function.
+@@ -24,7 +23,11 @@ pub fn capitalize_first(input: &str) -> String {
  // Return a vector of strings.
  // ["hello", "world"] -> ["Hello", "World"]
  pub fn capitalize_words_vector(words: &[&str]) -> Vec<String> {
--    vec![]
-+    words.into_iter().map(|word| )
+-    words.into_iter().map(|word| )
++    words.into_iter()
++        .map(|word| {
++            capitalize_first(*word)
++        } )
++        .collect()
  }
  
  // Step 3.
-diff --git a/exercises/lifetimes/lifetimes1.rs b/exercises/lifetimes/lifetimes1.rs
-index 87bde49..357fa8e 100644
---- a/exercises/lifetimes/lifetimes1.rs
-+++ b/exercises/lifetimes/lifetimes1.rs
-@@ -8,9 +8,8 @@
- // Execute `rustlings hint lifetimes1` or use the `hint` watch subcommand for a
- // hint.
- 
--// I AM NOT DONE
- 
--fn longest(x: &str, y: &str) -> &str {
-+fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
-     if x.len() > y.len() {
-         x
-     } else {
-diff --git a/exercises/lifetimes/lifetimes2.rs b/exercises/lifetimes/lifetimes2.rs
-index 4f3d8c1..e9019ed 100644
---- a/exercises/lifetimes/lifetimes2.rs
-+++ b/exercises/lifetimes/lifetimes2.rs
-@@ -6,7 +6,6 @@
- // Execute `rustlings hint lifetimes2` or use the `hint` watch subcommand for a
- // hint.
- 
--// I AM NOT DONE
- 
- fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
-     if x.len() > y.len() {
-@@ -19,9 +18,11 @@ fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
- fn main() {
-     let string1 = String::from("long string is long");
-     let result;
-+    // let string2 = String::from("xyz");
-     {
-         let string2 = String::from("xyz");
-         result = longest(string1.as_str(), string2.as_str());
-+        println!("The longest string is '{}'", result);
-     }
--    println!("The longest string is '{}'", result);
-+    // println!("The longest string is '{}'", result);
+@@ -32,7 +35,11 @@ pub fn capitalize_words_vector(words: &[&str]) -> Vec<String> {
+ // Return a single string.
+ // ["hello", " ", "world"] -> "Hello World"
+ pub fn capitalize_words_string(words: &[&str]) -> String {
+-    String::new()
++    words.into_iter()
++        .map(|str| {
++            capitalize_first(*str)
++        } )
++        .collect()
  }
-diff --git a/exercises/lifetimes/lifetimes3.rs b/exercises/lifetimes/lifetimes3.rs
-index 9c59f9c..2507d59 100644
---- a/exercises/lifetimes/lifetimes3.rs
-+++ b/exercises/lifetimes/lifetimes3.rs
-@@ -5,11 +5,10 @@
- // Execute `rustlings hint lifetimes3` or use the `hint` watch subcommand for a
- // hint.
- 
--// I AM NOT DONE
- 
--struct Book {
--    author: &str,
--    title: &str,
-+struct Book<'a> {
-+    author: &'a str,
-+    title: &'a str,
- }
- 
- fn main() {
-diff --git a/exercises/quiz3.rs b/exercises/quiz3.rs
-index 3b01d31..9c5e576 100644
---- a/exercises/quiz3.rs
-+++ b/exercises/quiz3.rs
-@@ -16,16 +16,17 @@
- //
- // Execute `rustlings hint quiz3` or use the `hint` watch subcommand for a hint.
- 
--// I AM NOT DONE
- 
--pub struct ReportCard {
--    pub grade: f32,
-+use std::fmt::Display;
-+
-+pub struct ReportCard<T> {
-+    pub grade: T,
-     pub student_name: String,
-     pub student_age: u8,
- }
- 
--impl ReportCard {
--    pub fn print(&self) -> String {
-+impl<T: Display> ReportCard<T> {
-+    fn print(&self) -> String {
-         format!("{} ({}) - achieved a grade of {}",
-             &self.student_name, &self.student_age, &self.grade)
-     }
-@@ -52,7 +53,7 @@ mod tests {
-     fn generate_alphabetic_report_card() {
-         // TODO: Make sure to change the grade here after you finish the exercise.
-         let report_card = ReportCard {
--            grade: 2.1,
-+            grade: "A+",
-             student_name: "Gary Plotter".to_string(),
-             student_age: 11,
-         };
-diff --git a/exercises/tests/tests1.rs b/exercises/tests/tests1.rs
-index 810277a..eab3ba7 100644
---- a/exercises/tests/tests1.rs
-+++ b/exercises/tests/tests1.rs
-@@ -10,12 +10,10 @@
- // Execute `rustlings hint tests1` or use the `hint` watch subcommand for a
- // hint.
- 
--// I AM NOT DONE
--
- #[cfg(test)]
- mod tests {
-     #[test]
-     fn you_can_assert() {
--        assert!();
-+        assert!(true);
-     }
- }
-diff --git a/exercises/tests/tests2.rs b/exercises/tests/tests2.rs
-index f8024e9..0777dae 100644
---- a/exercises/tests/tests2.rs
-+++ b/exercises/tests/tests2.rs
-@@ -6,12 +6,11 @@
- // Execute `rustlings hint tests2` or use the `hint` watch subcommand for a
- // hint.
- 
--// I AM NOT DONE
  
  #[cfg(test)]
- mod tests {
-     #[test]
-     fn you_can_assert_eq() {
--        assert_eq!();
-+        assert_eq!(true, true);
-     }
- }
-diff --git a/exercises/tests/tests3.rs b/exercises/tests/tests3.rs
-index 4013e38..2c1b298 100644
---- a/exercises/tests/tests3.rs
-+++ b/exercises/tests/tests3.rs
-@@ -7,7 +7,6 @@
- // Execute `rustlings hint tests3` or use the `hint` watch subcommand for a
+diff --git a/exercises/iterators/iterators3.rs b/exercises/iterators/iterators3.rs
+index 29fa23a..ecc5659 100644
+--- a/exercises/iterators/iterators3.rs
++++ b/exercises/iterators/iterators3.rs
+@@ -9,7 +9,6 @@
+ // Execute `rustlings hint iterators3` or use the `hint` watch subcommand for a
  // hint.
  
 -// I AM NOT DONE
  
- pub fn is_even(num: i32) -> bool {
-     num % 2 == 0
-@@ -19,11 +18,12 @@ mod tests {
- 
-     #[test]
-     fn is_true_when_even() {
--        assert!();
-+        assert!(is_even(2));
-     }
- 
-     #[test]
-     fn is_false_when_odd() {
--        assert!();
-+        // assert!(!is_even(5));
-+        assert!(!is_even(5));
-     }
- }
-diff --git a/exercises/tests/tests4.rs b/exercises/tests/tests4.rs
-index 935d0db..7c11a59 100644
---- a/exercises/tests/tests4.rs
-+++ b/exercises/tests/tests4.rs
-@@ -5,7 +5,6 @@
- // Execute `rustlings hint tests4` or use the `hint` watch subcommand for a
- // hint.
- 
--// I AM NOT DONE
- 
- struct Rectangle {
-     width: i32,
-@@ -30,17 +29,19 @@ mod tests {
-     fn correct_width_and_height() {
-         // This test should check if the rectangle is the size that we pass into its constructor
-         let rect = Rectangle::new(10, 20);
--        assert_eq!(???, 10); // check width
--        assert_eq!(???, 20); // check height
-+        assert_eq!(rect.width, 10); // check width
-+        assert_eq!(rect.height, 20); // check height
-     }
- 
-     #[test]
-+    #[should_panic]
-     fn negative_width() {
-         // This test should check if program panics when we try to create rectangle with negative width
-         let _rect = Rectangle::new(-10, 10);
-     }
- 
-     #[test]
-+    #[should_panic]
-     fn negative_height() {
-         // This test should check if program panics when we try to create rectangle with negative height
-         let _rect = Rectangle::new(10, -10);
-diff --git a/exercises/traits/traits1.rs b/exercises/traits/traits1.rs
-index fe8ad37..cfbffce 100644
---- a/exercises/traits/traits1.rs
-+++ b/exercises/traits/traits1.rs
-@@ -17,7 +17,6 @@ impl AppendBar for String {
-         self.push_str("Bar");
-         self
-     }
--     // TODO: Implement `AppendBar` for type `String`.
+ #[derive(Debug, PartialEq, Eq)]
+ pub enum DivisionError {
+@@ -26,23 +25,31 @@ pub struct NotDivisibleError {
+ // Calculate `a` divided by `b` if `a` is evenly divisible by `b`.
+ // Otherwise, return a suitable error.
+ pub fn divide(a: i32, b: i32) -> Result<i32, DivisionError> {
+-    todo!();
++    return match (a, b) {
++        (_, 0) => Err(DivisionError::DivideByZero),
++        (a, b) if 0 != a % b => Err(DivisionError::NotDivisible(NotDivisibleError { dividend: a, divisor: b })),
++        _ => Ok(a / b)
++    }
  }
  
- fn main() {
+ // Complete the function and return a value of the correct type so the test
+ // passes.
+ // Desired output: Ok([1, 11, 1426, 3])
+-fn result_with_list() -> () {
++fn result_with_list() -> Result<Vec<i32>, DivisionError> {
+     let numbers = vec![27, 297, 38502, 81];
+-    let division_results = numbers.into_iter().map(|n| divide(n, 27));
++    numbers.into_iter()
++        .map(|n| divide(n, 27))
++        .collect()
+ }
+ 
+ // Complete the function and return a value of the correct type so the test
+ // passes.
+ // Desired output: [Ok(1), Ok(11), Ok(1426), Ok(3)]
+-fn list_of_results() -> () {
++fn list_of_results() -> Vec<Result<i32, DivisionError>> {
+     let numbers = vec![27, 297, 38502, 81];
+-    let division_results = numbers.into_iter().map(|n| divide(n, 27));
++    numbers.into_iter()
++        .map(|n| divide(n, 27))
++        .collect()
+ }
+ 
+ #[cfg(test)]
